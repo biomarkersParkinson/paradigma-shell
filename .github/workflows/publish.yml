@@ -12,11 +12,27 @@ jobs:
   build-and-test:
     uses: ./.github/workflows/build-and-test.yml
 
+  create-tag:
+    name: Create Git Tag
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Create Git Tag
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{ needs.build-and-test.outputs.version }}
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git tag "v${VERSION}"
+        git push origin "v${VERSION}"
 
   publish-to-pypi:
     name: Publish to PyPI
-    needs:
-      - build-and-test
+    needs: [build-and-test, create-tag]
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -35,11 +51,8 @@ jobs:
 
 
   github-release:
-    name: >-
-      Sign the Python 🐍 distribution 📦 with Sigstore
-      and upload them to GitHub Release
-    needs:
-    - build-and-test
+    name: Sign distribution and create GitHub release
+    needs: [build-and-test, create-tag]
     runs-on: ubuntu-latest
 
     permissions:
@@ -52,27 +65,32 @@ jobs:
       with:
         name: build-artifacts
         path: dist/
+
     - name: Sign the dists with Sigstore
       uses: sigstore/gh-action-sigstore-python@v2.1.1
       with:
         inputs: >-
           ./dist/*.tar.gz
           ./dist/*.whl
+
     - name: Create GitHub Release
       env:
         GITHUB_TOKEN: ${{ github.token }}
+        VERSION: ${{ needs.build-and-test.outputs.version }}
       run: >-
         gh release create
-        '${{ github.ref_name }}'
+        "v${VERSION}"
         --repo '${{ github.repository }}'
         --notes ""
+
     - name: Upload artifact signatures to GitHub Release
       env:
         GITHUB_TOKEN: ${{ github.token }}
+        VERSION: ${{ needs.build-and-test.outputs.version }}
       # Upload to GitHub Release using the `gh` CLI.
       # `dist/` contains the built packages, and the
       # sigstore-produced signatures and certificates.
       run: >-
         gh release upload
-        '${{ github.ref_name }}' dist/**
+        "v${VERSION}" dist/**
         --repo '${{ github.repository }}'
