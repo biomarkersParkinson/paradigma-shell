@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "paradigma"
-version = "0.1.0"
+version = "0.1.2"
 description = "Digital Biomarkers for Parkinson's Disease Toolbox"
 authors = ["Radboud, eScience Center"]
 license = "Apache-2.0"
