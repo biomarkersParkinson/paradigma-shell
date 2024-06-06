@@ -6,8 +6,7 @@ name: Publish to PyPI
 
 on:
   push:
-    tags:
-      - "v*.*.*"  # Push tags like v1.0.0
+    branches: [ release ]
 
 jobs:
   build-and-test:
