@@ -17,6 +17,8 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.9']
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
 
     steps:
     - uses: actions/checkout@v4
@@ -34,8 +36,7 @@ jobs:
       id: get_version
       run: |
         VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['tool']['poetry']['version'])")
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        echo "::set-output name=version::$VERSION"
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
 
     - name: Install dependencies
       run: |
