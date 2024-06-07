@@ -58,6 +58,10 @@ jobs:
         name: build-artifacts
         path: dist/
 
-    - name: Log output variables
-      run: |
-        echo "VERSION=${{ steps.get_version.outputs.VERSION }}"
+  job2:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - env:
+          VERSION: ${{needs.build-and-test.outputs.VERSION}}
+        run: echo "$VERSION"
