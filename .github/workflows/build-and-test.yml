@@ -18,7 +18,7 @@ jobs:
       matrix:
         python-version: ['3.9']
     outputs:
-      version: ${{ steps.get_version.outputs.version }}
+      VERSION: ${{ steps.get_version.outputs.VERSION }}
 
     steps:
     - uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
       run: |
         VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['tool']['poetry']['version'])")
         echo Version: $VERSION
-        echo "version=$VERSION" >> $GITHUB_ENV
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
     - name: Install dependencies
       run: |
