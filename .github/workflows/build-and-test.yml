@@ -37,7 +37,7 @@ jobs:
       run: |
         VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['tool']['poetry']['version'])")
         echo Version: $VERSION
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
     - name: Install dependencies
       run: |
