@@ -23,7 +23,7 @@ jobs:
     - name: Create Git Tag
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        VERSION: ${{ needs.build-and-test.outputs.version }}
+        VERSION: ${{ needs.build-and-test.outputs.VERSION }}
       run: |
         git config --global user.name 'github-actions'
         git config --global user.email 'github-actions@github.com'
