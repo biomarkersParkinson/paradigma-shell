@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [ main ]
   workflow_call:
+    outputs:
+      VERSION:
+        description: "The version retrieved from the pyproject.toml file."
+        value: ${{ jobs.build-and-test.outputs.VERSION }}
 
 jobs:
   build-and-test:
