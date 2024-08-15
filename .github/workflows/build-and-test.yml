@@ -75,7 +75,6 @@ jobs:
         poetry run make html --directory docs
     - name: Archive documentation
       uses: actions/upload-artifact@v4
-      if: github.ref == 'refs/heads/release'
       with:
         name: docs-html
         path: docs/build/html/
